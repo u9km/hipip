@@ -1,4 +1,4 @@
-name: Build Tool
+name: Build Sovereign Final
 
 on: [push, workflow_dispatch]
 
@@ -7,7 +7,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Compile
         run: |
           xcrun --sdk iphoneos clang -dynamiclib -arch arm64 \
@@ -20,5 +20,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Sovereign_Tool
+          name: Sovereign_Dylib
           path: Sovereign.dylib

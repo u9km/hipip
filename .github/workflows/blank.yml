@@ -1,4 +1,4 @@
-name: Build Smart Hook
+name: Build Sovereign Final
 
 on: [push, workflow_dispatch]
 
@@ -8,12 +8,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile with Dobby
+      - name: Compile Final Version
         run: |
-          # نستخدم *.mm لجمع الملفات
-          # -L. تعني ابحث عن المكتبات في المجلد الحالي
-          # -ldobby تعني اربط ملف libdobby.a
-          
+          # التحقق من وجود ملفات Dobby
+          if [ ! -f "libdobby.a" ]; then echo "❌ Error: libdobby.a missing!"; exit 1; fi
+          if [ ! -f "dobby.h" ]; then echo "❌ Error: dobby.h missing!"; exit 1; fi
+
+          # أمر البناء (بدون أخطاء)
           xcrun --sdk iphoneos clang -dynamiclib -arch arm64 \
           -isysroot $(xcrun --sdk iphoneos --show-sdk-path) \
           -framework Foundation -framework UIKit \
@@ -21,9 +22,9 @@ jobs:
           -lc++ \
           -L. -ldobby \
           -Wno-error \
-          -o Sovereign.dylib *.mm
+          -o Sovereign.dylib Sovereign.mm
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Sovereign_Dylib
+          name: Sovereign_Final_Dylib
           path: Sovereign.dylib

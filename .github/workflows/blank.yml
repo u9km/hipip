@@ -1,4 +1,4 @@
-name: Build Smart Hook (Auto-Download Dobby)
+name: Build Smart Hook
 
 on: [push, workflow_dispatch]
 
@@ -8,20 +8,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1. هذه الخطوة تقوم بتحميل ملفات Dobby لك تلقائياً
-      - name: Download Dobby Library
-        run: |
-          echo "Downloading Dobby..."
-          # تحميل الهيدر
-          curl -L -o dobby.h https://raw.githubusercontent.com/jmpews/Dobby/master/include/dobby.h
-          # تحميل المكتبة (نسخة الايفون arm64)
-          curl -L -o libdobby.a https://github.com/Xpl0itU/iOS-Dobby-Build/raw/main/libdobby.a
-
-      # 2. خطوة البناء
       - name: Compile with Dobby
         run: |
-          # تأكدنا أن الملفات تم تحميلها في الخطوة السابقة
-          # الآن نقوم بالربط والبناء
+          # نستخدم *.mm لجمع الملفات
+          # -L. تعني ابحث عن المكتبات في المجلد الحالي
+          # -ldobby تعني اربط ملف libdobby.a
           
           xcrun --sdk iphoneos clang -dynamiclib -arch arm64 \
           -isysroot $(xcrun --sdk iphoneos --show-sdk-path) \
@@ -34,5 +25,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Sovereign_Smart_Dylib
+          name: Sovereign_Dylib
           path: Sovereign.dylib
